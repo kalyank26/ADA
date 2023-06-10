@@ -1,0 +1,51 @@
+#define SIZE 1000001
+
+
+typedef struct {
+    bool* values;
+    
+} MyHashSet;
+
+
+
+MyHashSet* myHashSetCreate() {
+
+   MyHashSet* obj = malloc(sizeof(MyHashSet));
+    obj->values = calloc(SIZE, sizeof(bool));
+    return obj;
+    
+}
+
+void myHashSetAdd(MyHashSet* obj, int key) {
+
+    obj->values[key] = true;
+  
+}
+
+void myHashSetRemove(MyHashSet* obj, int key) {
+
+     obj->values[key] = false;
+  
+}
+
+bool myHashSetContains(MyHashSet* obj, int key) {
+
+   return obj->values[key];
+}
+
+void myHashSetFree(MyHashSet* obj) {
+      free(obj->values);
+    free(obj);
+}
+
+/**
+ * Your MyHashSet struct will be instantiated and called as such:
+ * MyHashSet* obj = myHashSetCreate();
+ * myHashSetAdd(obj, key);
+ 
+ * myHashSetRemove(obj, key);
+ 
+ * bool param_3 = myHashSetContains(obj, key);
+ 
+ * myHashSetFree(obj);
+*/
