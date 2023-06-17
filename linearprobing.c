@@ -1,83 +1,91 @@
 #include <stdio.h>
-#include<stdlib.h>
-#define N 5
+#include <stdlib.h>
 
-int h[N]=NULL;
+#define SIZE 20
 
-void insert()
-{
+typedef struct {
+    int key;
+    int value;
+} HashEntry;
 
- int key,index,i,flag=0,hkey;
- printf("\nenter a value to insert into hash table\n");
- scanf("%d",&key);
- hkey=key%N;
- for(i=0;i<N;i++)
-    {
+HashEntry* hashTable[SIZE];
 
-     index=(hkey+i)%N;
+int hashCode(int key) {
+    return key % SIZE;
+}
 
-     if(h[index] == NULL)
-     {
-        h[index]=key;
-         break;
-     }
+void insert(int key, int value) {
+    HashEntry* item = (HashEntry*) malloc(sizeof(HashEntry));
+    item->key = key;
+    item->value = value;
 
+    int hashIndex = hashCode(key);
+
+    while (hashTable[hashIndex] != NULL) {
+        hashIndex++;
+        hashIndex %= SIZE;
     }
 
-    if(i == N)
-
-     printf("\nelement cannot be inserted\n");
+    hashTable[hashIndex] = item;
 }
-void search()
-{
 
- int key,index,i,flag=0,hkey;
- printf("\nenter search element\n");
- scanf("%d",&key);
- hkey=key%N;
- for(i=0;i<N; i++)
- {
-    index=(hkey+i)%N;
-    if(h[index]==key)
-    {
-      printf("value is found at index %d",index);
-      break;
+void display() {
+    int i;
+    for (i = 0; i < SIZE; i++) {
+        if (hashTable[i] != NULL)
+            printf("(%d, %d)", hashTable[i]->key, hashTable[i]->value);
+        else
+            printf("~~");
+        printf("\n");
     }
-  }
-  if(i == N)
-    printf("\n value is not found\n");
 }
-void display()
-{
 
-  int i;
+int search(int key) {
+    int hashIndex = hashCode(key);
 
-  printf("\nelements in the hash table are \n");
+    while (hashTable[hashIndex] != NULL) {
+        if (hashTable[hashIndex]->key == key)
+            return hashTable[hashIndex]->value;
 
-  for(i=0;i<N; i++)
-
-  printf("\nat index %d \t value =  %d",i,h[i]);
-
-}
-void main()
-{
-    int opt,i;
-    while(1)
-    {
-        printf("\nPress 1. Insert\t 2. Display \t3. Search \t4.Exit \n");
-        scanf("%d",&opt);
-        switch(opt)
-        {
-            case 1:
-                insert();
-                break;
-            case 2:
-                display();
-                break;
-            case 3:
-                search();
-                break;
-            case 4:exit(0);
-        }
+        hashIndex++;
+        hashIndex %= SIZE;
     }
+
+    return -1;
+}
+
+int main() {
+   int keys[20],values[20];
+   int size,c;
+   printf("enter no of elements");
+   scanf("%d",&size);
+   for(int i=0;i<size;i++){
+    printf("enter the key of %d element",i+1);
+    scanf("%d",&keys[i]);
+    printf("enter the value of %d element",i+1);
+    scanf("%d",&values[i]);
+   }
+
+
+    for (int i = 0; i < size; i++)
+        insert(keys[i], values[i]);
+while(1){
+    printf("enter 1 to display and 2 to search");
+    scanf("%d",&c);
+    if(c==1){
+    printf("Hash table:\n");
+    display();
+    }
+    else if(c==2){
+    int searchkey;
+    printf("enter the key of the element you want to search");
+    scanf("%d",&searchkey);
+    int result = search(searchkey);
+    if (result != -1)
+        printf("\nValue found for key %d: %d\n", searchkey, result);
+    else
+        printf("\nValue not found for key %d\n", searchkey);
+    }
+    else printf("invalid choice");}
+    return 0;
 }
